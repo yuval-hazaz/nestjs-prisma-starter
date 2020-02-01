@@ -23,7 +23,7 @@ export interface Connection<T> {
   edges: Array<Edge<T>>;
   nodes: Array<T>;
   pageInfo: PageInfo;
-  // totalCount: number;
+  totalCount: number;
 }
 
 /**
@@ -33,6 +33,7 @@ export interface Connection<T> {
  */
 export async function findManyCursor<Model extends { id: string }>(
   findMany: (args: ConnectionArguments) => Promise<Model[]>,
+  count: () => Promise<number>,
   args: ConnectionArguments = {} as ConnectionArguments
 ): Promise<Connection<Model>> {
   if (args.first === undefined && args.last === undefined) {
@@ -58,8 +59,8 @@ export async function findManyCursor<Model extends { id: string }>(
   // Execute the underlying findMany operation
   const nodes = await findMany({ ...args, first, last });
 
-  // totalCounts
-  // const totalCounts = nodes.length;
+  // FIXME use parameterized count() method or return findMany with meta info
+  const totalCount = await count();
 
   // Check if we actually got an additional node. This would indicate we have
   // a prev/next page
@@ -97,7 +98,7 @@ export async function findManyCursor<Model extends { id: string }>(
       endCursor,
       hasNextPage,
       hasPreviousPage
-    }
-    // totalCount: totalCounts
+    },
+    totalCount: totalCount
   };
 }

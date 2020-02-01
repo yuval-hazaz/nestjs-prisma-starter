@@ -30,6 +30,8 @@ export class PostResolver {
           },
           ...args
         }),
+      // FIXME use parameterized count
+      () => this.prisma.post.count(),
       { first, last, before, after }
     );
   }

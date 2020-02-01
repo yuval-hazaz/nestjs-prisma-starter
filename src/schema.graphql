@@ -42,6 +42,7 @@ type PostConnection {
   edges: [PostEdge!]
   nodes: [Post!]
   pageInfo: PageInfo!
+  totalCount: Int!
 }
 
 type PostEdge {
